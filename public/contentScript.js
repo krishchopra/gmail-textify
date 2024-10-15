@@ -114,15 +114,15 @@ new MutationObserver(injectDictationButton).observe(document.body, {
   subtree: true,
 });
 
-function messageListener(message, sender, sendResponse) {
-  if (message.action === "insertTranscription") {
+function messageListener(request, sender, sendResponse) {
+  if (request.action === "insertTranscription") {
     const activeElement = document.activeElement;
     if (activeElement.isContentEditable) {
       const selection = window.getSelection();
       const range = selection.getRangeAt(0);
       let textToInsert = request.text;
 
-      if (range.startOffset < 0) {
+      if (range.startOffset > 0) {
         const textBefore = range.startContainer.textContent;
         // add a space before the text to insert if the text before is a punctuation mark
         if (/[.!?]\s*$/.test(textBefore) || /[.!?]$/.test(request.text)) {
@@ -163,7 +163,7 @@ function messageListener(message, sender, sendResponse) {
     if (dictationButton) {
       if (request.isRecording) {
         dictationButton.innerHTML =
-          '<span class="pulse-indicator"></span> Stop';
+          '<span class="pulse-indicator active"></span> Stop';
       } else {
         dictationButton.innerHTML =
           '🎙️ <span class="pulse-indicator"></span> Dictate';

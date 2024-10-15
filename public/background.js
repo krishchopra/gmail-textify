@@ -39,7 +39,7 @@ const handleTranscription = async (audioData) => {
 
 let isRecording = false;
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "transcribeAudio") {
     handleTranscription(request.audioData)
       .then((transcription) => {

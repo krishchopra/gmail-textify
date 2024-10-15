@@ -24,7 +24,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["image.png"],
+      "resources": ["image.png", "permission.html", "requestPermission.js"],
       "matches": ["https://mail.google.com/*"]
     }
   ]
