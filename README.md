@@ -2,7 +2,7 @@
 
 **Chrome extension that converts voice to text inside Gmail!**
 
-To use, begin by cloning the repo, running "npm install", and adding a .env file to the root directory of the project with your OpenAI API key (format should be VITE_OPENAI_API_KEY={YOUR KEY}). Then, run "npm run build". Finally, navigate to the Extensions tab on Chrome, enable Developer Mode in the top right, and click "Load unpacked" - upload the /dist folder that was created.
+To use, begin by cloning the repo, running "npm install", and adding a .env file to the root directory of the project with your OpenAI API key (format should be VITE_OPENAI_API_KEY={YOUR KEY}). Then, run "npm run build". Finally, navigate to the Extensions tab on Chrome, enable Developer Mode in the top right, and click "Load unpacked" - upload the entire "dist" folder that was created.
 
 After these steps, the extension should be ready to use! Would appreciate any feedback :)
 
