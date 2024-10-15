@@ -8,56 +8,50 @@ function injectDictationButton() {
       button.innerHTML = '🎙️ <span class="pulse-indicator"></span> Dictate';
       button.className = "dictation-button";
       button.style.cssText = `
-			position: absolute;
-			bottom: 5px;
-			left: 5px;
-			z-index: 1000;
-			display: flex;
-			align-items: center;
-			background: rgba(255, 255, 255, 0.9);
-			border: 1px solid #ccc;
-			border-radius: 4px;
-			cursor: pointer;
-			font-size: 14px;
-			padding: 5px 10px;
-			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-			transition: background-color 0.2s, transform 0.2s;
-    `;
+        position: absolute;
+        bottom: 5px;
+        left: 5px;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        padding: 5px 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        transition: background-color 0.2s, transform 0.2s;
+      `;
       button.addEventListener("click", toggleDictation);
 
-      // add some hover effects
+      // Hover and active effects
       const style = document.createElement("style");
       style.textContent = `
-			.dictation-button:hover {
-				background-color: #e0e0e0 !important;
-			}
-			.pulse-indicator {
-				width: 8px;
-				height: 8px;
-				border-radius: 50%;
-				background-color: #ff0000;
-				margin: 0 5px;
-				display: none;
-			}
-			@keyframes pulse {
-				0% {
-					transform: scale(0.95) opacity: 0.7;
-				}
-				50% {
-					transform: scale(1.1) opacity: 1;
-				}
-				100% {
-					transform: scale(0.95) opacity: 0.7;
-				}
-			}
-			.pulse-indicator.active {
-				display: inline-block;
-				animation: pulse 1s infinite;
-			}
-		`;
+        .dictation-button:hover {
+          background-color: #e0e0e0 !important;
+        }
+        .pulse-indicator {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background-color: #ff0000;
+          margin: 0 5px;
+          display: none;
+        }
+        @keyframes pulse {
+          0% { transform: scale(0.95); opacity: 0.7; }
+          50% { transform: scale(1.05); opacity: 1; }
+          100% { transform: scale(0.95); opacity: 0.7; }
+        }
+        .pulse-indicator.active {
+          display: inline-block;
+          animation: pulse 1s infinite;
+        }
+      `;
       document.head.appendChild(style);
 
-      // want relative positioning for the parent element
+      // Ensure the parent element is positioned relatively
       box.parentElement.style.position = "relative";
       box.parentElement.appendChild(button);
     }
@@ -70,7 +64,7 @@ let audioChunks = [];
 
 function toggleDictation() {
   if (isRecording) {
-    chrome.runtime.sendMessage({ action: "stopRecording" });
+    chrome.runtime.sendMessage({ action: "stopDictation" });
     this.textContent = "🎙️ Dictate";
     if (mediaRecorder) {
       mediaRecorder.stop();
@@ -100,14 +94,12 @@ function toggleDictation() {
         chrome.runtime.sendMessage({ action: "startDictation" });
         this.textContent = "⏹️ Stop";
       })
-      .catch((err) => {
-        console.error("Error accessing microphone: ", err);
-      });
+      .catch((error) => console.error("Error accessing microphone:", error));
   }
   isRecording = !isRecording;
 }
 
-// Run the injectDictationButton function whenever the page loads/changes
+// Run the injection when the page loads and whenever it changes
 injectDictationButton();
 new MutationObserver(injectDictationButton).observe(document.body, {
   childList: true,
@@ -122,9 +114,9 @@ function messageListener(request, sender, sendResponse) {
       const range = selection.getRangeAt(0);
       let textToInsert = request.text;
 
+      // Check if we need to add a space
       if (range.startOffset > 0) {
         const textBefore = range.startContainer.textContent;
-        // add a space before the text to insert if the text before is a punctuation mark
         if (/[.!?]\s*$/.test(textBefore) || /[.!?]$/.test(request.text)) {
           textToInsert = " " + textToInsert;
         }
@@ -137,15 +129,15 @@ function messageListener(request, sender, sendResponse) {
       selection.removeAllRanges();
       selection.addRange(range);
     } else if (
-      activeElement.tagName === "INPUT" ||
-      activeElement.tagName === "TEXTAREA"
+      activeElement.tagName === "TEXTAREA" ||
+      activeElement.tagName === "INPUT"
     ) {
       const startPos = activeElement.selectionStart;
       const endPos = activeElement.selectionEnd;
       const beforeText = activeElement.value.substring(0, startPos);
       const afterText = activeElement.value.substring(endPos);
 
-      // check for space insertion
+      // Check if we need to add a space
       let textToInsert = request.text;
       if (
         beforeText.length > 0 &&

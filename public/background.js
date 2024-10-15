@@ -3,8 +3,8 @@ const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 const handleTranscription = async (audioData) => {
   const audioArrayBuffer = new Uint8Array(audioData).buffer;
   const audioBlob = new Blob([audioArrayBuffer], { type: "audio/wav" });
+
   if (!(audioBlob instanceof Blob) || audioBlob.size === 0) {
-    console.error("Invalid audio data");
     return;
   }
 
@@ -26,14 +26,13 @@ const handleTranscription = async (audioData) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("Transcription failed:", errorText);
-      return;
+      throw new Error(`Failed to fetch transcription: ${errorText}`);
     }
 
     const transcription = await response.json();
     return transcription.text;
   } catch (error) {
-    console.error("Error during transcription:", error);
+    console.error("Error transcribing audio:", error);
   }
 };
 
@@ -54,7 +53,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       .catch((error) => {
         sendResponse({ status: "Error", message: error.message });
       });
-    return true; // Indicates that the response will be sent asynchronously
+    return true;
   } else if (request.action === "startDictation") {
     if (!isRecording) {
       isRecording = true;
