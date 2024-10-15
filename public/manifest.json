@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Gmail Textify",
+  "version": "1.0.0",
+  "description": "Convert voice to text inside Gmail!",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "action": {
+    "default_popup": "index.html"
+  },
+  "icons": {
+    "32": "image.png",
+    "48": "image.png",
+    "128": "image.png"
+  },
+  "host_permissions": ["https://mail.google.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": ["contentScript.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["image.png"],
+      "matches": ["https://mail.google.com/*"]
+    }
+  ]
+}
