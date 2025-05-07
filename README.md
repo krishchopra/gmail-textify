@@ -6,4 +6,4 @@ To use, begin by cloning the repo, running "npm install", and adding a .env file
 
 After these steps, the extension should be ready to use! Would appreciate any feedback :)
 
-(*Technical challenge for Wispr Flow SWE Internship*)
+(*Technical challenge for Wispr Flow SWE Internship, built within 2 hours*)
